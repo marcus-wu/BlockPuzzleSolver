@@ -151,7 +151,7 @@ namespace BlockPuzzleSolver.Tests
         [TestMethod]
         public void TestConstructor()
         {
-            var solver = new PuzzleSolver(pieces, new Vector3(2,2,2));
+            var solver = new ParallelSolver(pieces, new Vector3(2,2,2));
             Assert.AreEqual(2, solver.PieceVariants.Count);
             Assert.AreEqual(24, solver.PieceVariants[0].Count);
             Assert.AreEqual(24*2, solver.PieceVariants[1].Count);
@@ -160,33 +160,37 @@ namespace BlockPuzzleSolver.Tests
         [TestMethod]
         public void TestSolveSimple()
         {
-            var solver = new PuzzleSolver(piecesSimple, new Vector3(2, 2, 1));
+            var solver = new ParallelSolver(piecesSimple, new Vector3(2, 2, 1));
 
-            solver.Solve();
+            var results = solver.Solve();
+            Assert.IsNotNull(results);
         }
 
         [TestMethod]
         public void TestSolveSimpleRotation()
         {
-            var solver = new PuzzleSolver(pieces, new Vector3(2, 2, 2));
+            var solver = new ParallelSolver(pieces, new Vector3(2, 2, 2));
 
-            solver.Solve();
+            var results = solver.Solve();
+            Assert.IsNotNull(results);
         }
 
         [TestMethod]
         public void TestSolveSimpleThree()
         {
-            var solver = new PuzzleSolver(piecesThree, new Vector3(2, 2, 2));
+            var solver = new ParallelSolver(piecesThree, new Vector3(2, 2, 2));
 
-            solver.Solve();
+            var results = solver.Solve();
+            Assert.IsNotNull(results);
         }
 
         [TestMethod]
         public void TestSolveSomaCube()
         {
-            var solver = new PuzzleSolver(somaCube, new Vector3(3, 3, 3));
+            var solver = new ParallelSolver(somaCube, new Vector3(3, 3, 3));
 
-            solver.Solve();
+            var results = solver.Solve();
+            Assert.IsNotNull(results);
         }
 
         
