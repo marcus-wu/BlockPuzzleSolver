@@ -1,3 +1,4 @@
-BlockPuzzleSolver.Tests\bin/
-BlockPuzzle\BlockPuzzle\bin/
-BlockPuzzle\BlockPuzzle\obj/
+BlockPuzzleSolver.Tests/bin
+BlockPuzzle/BlockPuzzle/bin
+BlockPuzzle/BlockPuzzle/obj
+BlockPuzzleSolver.Tests/obj
