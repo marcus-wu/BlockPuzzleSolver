@@ -2,3 +2,5 @@ BlockPuzzleSolver.Tests/bin
 BlockPuzzle/BlockPuzzle/bin
 BlockPuzzle/BlockPuzzle/obj
 BlockPuzzleSolver.Tests/obj
+BlockPuzzle/BlockPuzzleContent/obj
+BlockPuzzleSolver/obj/
