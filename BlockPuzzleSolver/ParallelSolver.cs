@@ -7,17 +7,17 @@ namespace BlockPuzzleSolver
 {
     public class ParallelSolver : PuzzleSolver
     {
-        public ParallelSolver(Piece[] pieces, Vector3 bounding)
-            : base(pieces, bounding)
+        public override List<int> Solve(Puzzle puzzle)
         {
-        }
-
-        public override List<int> Solve()
-        {
+            if (puzzle == null)
+            {
+                Log.Add("No puzzle");
+                return null;
+            }
             var hash = new HashSet<Vector3>();
             DateTime start = DateTime.Now;
 
-            var first = PieceVariants[0];
+            var first = puzzle.Variants[0];
 
             List<int> result = null;
 
@@ -28,7 +28,7 @@ namespace BlockPuzzleSolver
 
                     var newList = new List<int>();
                     newList.Add(i);
-                    List<int> subResult = SolveHelper(newHash, 1, newList);
+                    List<int> subResult = SolveHelper(puzzle.Variants, newHash, 1, newList);
                     if (subResult != null)
                     {
                         result = subResult;
@@ -42,7 +42,7 @@ namespace BlockPuzzleSolver
                 for (int i = 0; i < result.Count; i++)
                 {
                     int idx = result[i];
-                    Piece piece = PieceVariants[i][idx];
+                    Piece piece = puzzle.Variants[i][idx];
                     Log.Add("Piece " + (char) (i + 65) + ":");
                     foreach (Vector3 v in piece.Layout)
                     {
@@ -59,9 +59,9 @@ namespace BlockPuzzleSolver
             return null;
         }
 
-        private List<int> SolveHelper(HashSet<Vector3> hash, int num, List<int> history)
+        private List<int> SolveHelper(List<List<Piece>> pieceVariants, HashSet<Vector3> hash, int num, List<int> history)
         {
-            List<Piece> pieceGroup = PieceVariants[num];
+            List<Piece> pieceGroup = pieceVariants[num];
 
             for (int i = 0; i < pieceGroup.Count; i++)
             {
@@ -77,7 +77,7 @@ namespace BlockPuzzleSolver
                 newList.Add(i);
 
 
-                if (num + 1 >= PieceVariants.Count)
+                if (num + 1 >= pieceVariants.Count)
                 {
                     return newList;
                 }
@@ -85,7 +85,7 @@ namespace BlockPuzzleSolver
                 var newHash = new HashSet<Vector3>(hash);
                 newHash.UnionWith(pieceVariant.Layout);
 
-                List<int> possibleSolution = SolveHelper(newHash, num + 1, newList);
+                List<int> possibleSolution = SolveHelper(pieceVariants, newHash, num + 1, newList);
 
                 if (possibleSolution != null)
                 {

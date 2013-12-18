@@ -6,17 +6,18 @@ namespace BlockPuzzleSolver
 {
     public class RecursiveSingleThreadedSolver : PuzzleSolver
     {
-        public RecursiveSingleThreadedSolver(Piece[] pieces, Vector3 bounding) : base(pieces, bounding)
+        public override List<int> Solve(Puzzle puzzle)
         {
-        }
+            if (puzzle == null)
+            {
+                Log.Add("No puzzle");
+                return null;
+            }
 
-        public override List<int> Solve()
-        {
             var hash = new HashSet<Vector3>();
             var start = DateTime.Now;
 
-            var result = SolveHelper(hash, 0, new List<int>(), "");
-            
+            var result = SolveHelper(puzzle.Variants, hash, 0, new List<int>(), "");
 
             if (result != null)
             {
@@ -25,7 +26,7 @@ namespace BlockPuzzleSolver
                 for (int i = 0; i < result.Count; i++)
                 {
                     var idx = result[i];
-                    var piece = PieceVariants[i][idx];
+                    var piece = puzzle.Variants[i][idx];
                     Log.Add("Piece " + (char)(i + 65) + ":");
                     foreach (var v in piece.Layout)
                     {
@@ -42,9 +43,12 @@ namespace BlockPuzzleSolver
             return null;
         }
 
-        private List<int> SolveHelper(HashSet<Vector3> hash, int num, List<int> history, string tabs)
+        private static List<int> SolveHelper(IList<List<Piece>> pieceVariants, ISet<Vector3> hash, int num, List<int> history, string tabs)
         {
-            var pieceGroup = PieceVariants[num];
+            if (hash == null) 
+                throw new ArgumentNullException("hash");
+
+            var pieceGroup = pieceVariants[num];
             var newTabs = tabs + "\t";
 
             for (int i = 0; i < pieceGroup.Count; i++)
@@ -66,7 +70,7 @@ namespace BlockPuzzleSolver
 
                 Log.Add(msg + " fits");
 
-                if (num + 1 >= PieceVariants.Count)
+                if (num + 1 >= pieceVariants.Count)
                 {
                     Log.Add(newTabs + "All pieces analyzed");
                     return newList;
@@ -75,7 +79,7 @@ namespace BlockPuzzleSolver
                 var newHash = new HashSet<Vector3>(hash);
                 newHash.UnionWith(pieceVariant.Layout);
 
-                var possibleSolution = SolveHelper(newHash, num + 1, newList, newMsg);
+                var possibleSolution = SolveHelper(pieceVariants, newHash, num + 1, newList, newMsg);
 
                 if (possibleSolution != null)
                 {

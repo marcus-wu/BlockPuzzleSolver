@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace BlockPuzzleSolver
 {
-
     public class Piece
     {
+        private readonly HashSet<Vector3> hash;
         public Vector3[] Layout;
-        public Vector3 Size;
         public Vector3 Offset;
-
-        private HashSet<Vector3> hash;
+        public Vector3 Size;
 
         public Piece(Vector3[] layout, Vector3 size, Vector3 offset)
         {
@@ -41,7 +38,6 @@ namespace BlockPuzzleSolver
             {
                 for (int y = 0; y < layout.GetLength(1); y++)
                 {
-                    
                     for (int x = 0; x < layout.GetLength(2); x++)
                     {
                         if (layout[z, y, x])
@@ -52,7 +48,6 @@ namespace BlockPuzzleSolver
                             v.Z = z;
                             points.Add(v);
                         }
-                            
                     }
                 }
             }
@@ -61,44 +56,17 @@ namespace BlockPuzzleSolver
             hash = new HashSet<Vector3>(Layout);
         }
 
-        public string ToArrayStr()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("{");
-            for (int z = 0; z < Size.Z; z++)
-            {
-                sb.AppendLine("    {");
-                for (int y = 0; y < Size.Y; y++)
-                {
-                    sb.Append("        {");
-                    for (int x = 0; x < Size.X; x++)
-                    {
-                        if (x != 0)
-                        {
-                            sb.Append(", ");
-                        }
-
-                        sb.Append(hash.Contains(new Vector3(x, y, z)) ? "true" : "false");
-                    }
-                    sb.AppendLine("}" + ((y < Size.Y - 1) ? "," : ""));
-                }
-                sb.AppendLine("    }" + ((z < Size.Z - 1) ? "," : ""));
-            }
-            sb.AppendLine("}");
-            return sb.ToString();
-        }
-
         public Piece GenerateRotate(float x, float y, float z)
         {
             // Create rotation matrix
-            var rotMatrix = Matrix.CreateFromYawPitchRoll(y, x, z);
+            Matrix rotMatrix = Matrix.CreateFromYawPitchRoll(y, x, z);
 
             // generate new sizes
             Vector3 size;
             Vector3.Transform(ref Size, ref rotMatrix, out size);
-            size.X = (int)Math.Round(size.X);
-            size.Y = (int)Math.Round(size.Y);
-            size.Z = (int)Math.Round(size.Z);
+            size.X = (int) Math.Round(size.X);
+            size.Y = (int) Math.Round(size.Y);
+            size.Z = (int) Math.Round(size.Z);
 
             // align to center
             Vector3 offset = Vector3.Zero;
@@ -125,9 +93,9 @@ namespace BlockPuzzleSolver
             {
                 Vector3 result;
                 Vector3.Transform(ref Layout[i], ref rotMatrix, out result);
-                result.X = (int)Math.Round(result.X);
-                result.Y = (int)Math.Round(result.Y);
-                result.Z = (int)Math.Round(result.Z);
+                result.X = (int) Math.Round(result.X);
+                result.Y = (int) Math.Round(result.Y);
+                result.Z = (int) Math.Round(result.Z);
                 points.Add(result);
             }
 
@@ -147,9 +115,9 @@ namespace BlockPuzzleSolver
             {
                 Vector3 result = Layout[i];
                 Vector3.Add(ref result, ref offset, out result);
-                result.X = (int)Math.Round(result.X);
-                result.Y = (int)Math.Round(result.Y);
-                result.Z = (int)Math.Round(result.Z);
+                result.X = (int) Math.Round(result.X);
+                result.Y = (int) Math.Round(result.Y);
+                result.Z = (int) Math.Round(result.Z);
                 points.Add(result);
             }
 
@@ -188,16 +156,36 @@ namespace BlockPuzzleSolver
 
             for (int z = 0; z <= (int) Math.Round(delta.Z); z++)
             {
-                for (int y = 0; y <= (int)Math.Round(delta.Y); y++)
+                for (int y = 0; y <= (int) Math.Round(delta.Y); y++)
                 {
-                    for (int x = 0; x <= (int)Math.Round(delta.X); x++)
+                    for (int x = 0; x <= (int) Math.Round(delta.X); x++)
                     {
-                        pieces.Add(GenerateMove(x,y,z));
+                        pieces.Add(GenerateMove(x, y, z));
                     }
                 }
             }
 
             return pieces.ToArray();
+        }
+
+        public bool[][][] ToArray()
+        {
+            var result = new bool[(int)Size.Z][][];
+            for (int z = 0; z < Size.Z; z++)
+            {
+                var yArr = new bool[(int) Size.Y][];
+                for (int y = 0; y < Size.Y; y++)
+                {
+                    var xArr = new bool[(int)Size.X];
+                    for (int x = 0; x < Size.X; x++)
+                    {
+                        xArr[x] = hash.Contains(new Vector3(x, y, z));
+                    }
+                    yArr[y] = xArr;
+                }
+                result[z] = yArr;
+            }
+            return result;
         }
 
         public bool Contains(ref Vector3 vector)

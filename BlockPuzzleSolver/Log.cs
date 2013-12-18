@@ -10,7 +10,6 @@ namespace BlockPuzzleSolver
         public static int MaxHeight = 12;
         public static List<string> log = new List<string>();
 
-//        public static List<string> history = new List<string>();
 
         public static void Add(string str)
         {
@@ -19,12 +18,11 @@ namespace BlockPuzzleSolver
                 log.RemoveAt(0);
             }
             log.Add(str);
-//            history.Add(str);
         }
 
         public static string GetLog()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var str in log)
             {
                 sb.AppendLine(str);
