@@ -22,6 +22,13 @@ namespace BlockPuzzleSolver
             Pieces = new List<bool[][][]>();
         }
 
+        public Puzzle(List<bool[][][]> pieces, Vector3 bounding)
+        {
+            Pieces = pieces;
+            Bounding = bounding;
+            Variants = GenerateAllVariants();
+        }
+
         public List<List<Piece>> GenerateAllVariants()
         {
             var pieceGroup = new List<List<Piece>>();

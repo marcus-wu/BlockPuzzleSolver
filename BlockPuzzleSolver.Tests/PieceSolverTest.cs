@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
 
@@ -7,192 +7,214 @@ namespace BlockPuzzleSolver.Tests
     [TestClass]
     public class PieceSolverTest
     {
-        readonly Piece[] piecesSimple = new[]
-                {
-                    new Piece(new[,,]
-                        {
+        private readonly bool[][][][] pieces = new[]
+            {
+                new[]
+                    {
+                        new[]
                             {
-                                {true, false},
-                                {true, true}
-                            }
-                        }),
-                    new Piece(new[,,]
-                        {
+                                new[] {false, true},
+                                new[] {true, true}
+                            },
+                        new[]
                             {
-                                {true}
+                                new[] {false, true},
+                                new[] {false, true}
                             }
-                        })
-                };
+                    },
+                new[]
+                    {
+                        new[]
+                            {
+                                new[] {false},
+                                new[] {true}
+                            },
+                        new[]
+                            {
+                                new[] {true},
+                                new[] {true}
+                            }
+                    }
+            };
 
-        readonly Piece[] pieces = new[]
-                {
-                    new Piece(new[,,]
-                        {
+        private readonly bool[][][][] piecesSimple = new[]
+            {
+                new[]
+                    {
+                        new[]
                             {
-                                {false, true},
-                                {true, true}
-                            },
-                            {
-                                {false, true},
-                                {false, true}
+                                new[] {true, false}, 
+                                new[] {true, true}
                             }
-                        }),
-                    new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {false},
-                                {true}
-                            },
-                            {
-                                {true},
-                                {true}
+                                new[] {true}
                             }
-                        })
-                };
+                    }
+            };
 
-        readonly Piece[] piecesThree = new[]
-                {
-                    new Piece(new[,,]
-                        {
+        private readonly bool[][][][] piecesThree = new[]
+            {
+                new[]
+                    {
+                        new[]
                             {
-                                {false, true},
-                                {true, true}
+                                new[] {false, true},
+                                new[] {true, true}
                             },
+                        new[]
                             {
-                                {false, true},
-                                {false, false}
+                                new[] {false, true},
+                                new[] {false, false}
                             }
-                        }),
-                    new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {false},
-                                {true}
+                                new[] {false},
+                                new[] {true}
                             },
+                        new[]
                             {
-                                {false},
-                                {true}
+                                new[] {false},
+                                new[] {true}
                             }
-                        }),
+                    },
+                new[]
+                    {
+                        new[]
+                            {
+                                new[] {true, true}
+                            }
+                    }
+            };
 
-                    new Piece(new[,,]
-                        {
+        private readonly bool[][][][] somaCube = new[]
+            {
+                new[]
+                    {
+                        new[]
                             {
-                                {true, true}
-                            }
-                        })
-                };
-
-        readonly Piece[] somaCube = new[]
-                {
-                    new Piece(new[,,]
-                        {
-                            {
-                                {false, true},
-                                {true, true}
+                                new[] {false, true},
+                                new[] {true, true}
                             },
+                        new[]
                             {
-                                {false, false},
-                                {true, false}
+                                new[] {false, false},
+                                new[] {true, false}
                             }
-                        }),
-                    new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {true, false},
-                                {true, true}
+                                new[] {true, false},
+                                new[] {true, true}
                             }
-                        }),
-                        new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {false, true, false},
-                                {true, true, true}
+                                new[] {false, true, false},
+                                new[] {true, true, true}
                             }
-                        }),
-                        new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {false, true, true},
-                                {true, true, false}
+                                new[] {false, true, true},
+                                new[] {true, true, false}
                             }
-                        }),
-                        new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {true, true, true},
-                                {false, false, true}
+                                new[] {true, true, true},
+                                new[] {false, false, true}
                             }
-                        }),
-                        new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {false, true},
-                                {true, true}
+                                new[] {false, true},
+                                new[] {true, true}
                             },
+                        new[]
                             {
-                                {false, true},
-                                {false, false}
+                                new[] {false, true},
+                                new[] {false, false}
                             }
-                        }),
-                        new Piece(new[,,]
-                        {
+                    },
+                new[]
+                    {
+                        new[]
                             {
-                                {false, true},
-                                {true, true}
+                                new[] {false, true},
+                                new[] {true, true}
                             },
+                        new[]
                             {
-                                {false, false},
-                                {false, true}
+                                new[] {false, false},
+                                new[] {false, true}
                             }
-                        })
-                };
+                    }
+            };
 
         [TestMethod]
         public void TestConstructor()
         {
-            var solver = new ParallelSolver(pieces, new Vector3(2,2,2));
-            Assert.AreEqual(2, solver.PieceVariants.Count);
-            Assert.AreEqual(24, solver.PieceVariants[0].Count);
-            Assert.AreEqual(24*2, solver.PieceVariants[1].Count);
+            var puzzle = new Puzzle(new List<bool[][][]>(pieces), new Vector3(2, 2, 2));
+            Assert.AreEqual(2, puzzle.Variants.Count);
+            Assert.AreEqual(24, puzzle.Variants[0].Count);
+            Assert.AreEqual(24 * 2, puzzle.Variants[1].Count);
         }
 
         [TestMethod]
         public void TestSolveSimple()
         {
-            var solver = new ParallelSolver(piecesSimple, new Vector3(2, 2, 1));
+            var puzzle = new Puzzle(new List<bool[][][]>(piecesSimple), new Vector3(2, 2, 1));
 
-            var results = solver.Solve();
+            var solver = new RecursiveSingleThreadedSolver();
+            List<int> results = solver.Solve(puzzle);
             Assert.IsNotNull(results);
         }
 
         [TestMethod]
         public void TestSolveSimpleRotation()
         {
-            var solver = new ParallelSolver(pieces, new Vector3(2, 2, 2));
+            var puzzle = new Puzzle(new List<bool[][][]>(pieces), new Vector3(2, 2, 2));
+            var solver = new RecursiveSingleThreadedSolver();
 
-            var results = solver.Solve();
+            List<int> results = solver.Solve(puzzle);
             Assert.IsNotNull(results);
         }
 
         [TestMethod]
         public void TestSolveSimpleThree()
         {
-            var solver = new ParallelSolver(piecesThree, new Vector3(2, 2, 2));
+            var puzzle = new Puzzle(new List<bool[][][]>(piecesThree), new Vector3(2, 2, 2));
+            var solver = new RecursiveSingleThreadedSolver();
 
-            var results = solver.Solve();
+            List<int> results = solver.Solve(puzzle);
             Assert.IsNotNull(results);
         }
 
         [TestMethod]
         public void TestSolveSomaCube()
         {
-            var solver = new ParallelSolver(somaCube, new Vector3(3, 3, 3));
+            var puzzle = new Puzzle(new List<bool[][][]>(somaCube), new Vector3(3, 3, 3));
+            var solver = new RecursiveSingleThreadedSolver();
 
-            var results = solver.Solve();
+            List<int> results = solver.Solve(puzzle);
             Assert.IsNotNull(results);
         }
-
-        
     }
 }

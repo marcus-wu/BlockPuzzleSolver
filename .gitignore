@@ -5,3 +5,5 @@ BlockPuzzleSolver.Tests/obj
 BlockPuzzle/BlockPuzzleContent/obj
 BlockPuzzleSolver/obj/
 *.cachefile
+*.user
+*.suo
